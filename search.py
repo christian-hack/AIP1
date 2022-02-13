@@ -95,7 +95,7 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     visited = []
-    queue = []
+    queue = util.Queue
 
     visited.append(problem.getStartState())
     queue.append(problem.getStartState())
@@ -105,10 +105,15 @@ def breadthFirstSearch(problem):
         m = queue.pop(0)
         print("Start's successors:", problem.getSuccessors(m))
         print(m, end = " ")
-        for successor in problem.getSuccessors(m):
-            if successor not in visited or not visited:
-                visited.append(successor)
-                queue.append(successor)
+        sucs = problem.getSuccessors(m)
+        # loop through successors of current state to check for existence in visited
+        # if state not found in visited, append to visited. Also append to queue for future pop
+        for successor, tuple in enumerate(sucs):
+            if [tuple[0], tuple[1], tuple[2]] not in visited:
+                visited.append([tuple[0], tuple[1], tuple[2]]) 
+                problem.result(tuple[1])
+                queue.push([tuple[0], tuple[1], tuple[2]])
+        print(problem)
     #print("Start:", problem.getStartState())
     #print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     
