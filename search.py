@@ -95,29 +95,38 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     visited = []
-    queue = []
+    queue = util.Queue()
 
     visited.append(problem.getStartState())
-    queue.insert(0, problem.getStartState())
+    queue.push(problem.getStartState())
 
     # create loop to continue until queue reaches end
-    while queue:
-        m = queue.pop(0)
+    while not queue.isEmpty():
+        # assign what's being popped off of queue to m
+        m = queue.pop()
+        # check to make sure m is not the goal state
+        if problem.isGoalState(m):
+            return m[1]
         print("Start's successors:", problem.getSuccessors(m))
         print(m, end = " ")
         sucs = problem.getSuccessors(m)
+        print(m)
         # loop through successors of current state to check for existence in visited
-        # if state not found in visited, append to visited. Also append to queue for future pop
+        # if state not found in visited, append to visited. Also push to queue with modified direction
+        # direction should be modified each time a successor is found (for the first time).
+        # new node would be [name, [dir1 + dir2 + dir 3...], cost]
         for successor, tuple in enumerate(sucs):
             if tuple not in visited:
-                visited.append(tuple) 
-                problem.result(tuple[1])
-                queue.insert(tuple)
+                visited.append(tuple)
+                t1 = tuple[1]
+                tuple[1] = m[0][1] + tuple[1]
+                queue.push(tuple)
         print(problem)
     #print("Start:", problem.getStartState())
     #print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
+    return m[1]
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
