@@ -94,39 +94,41 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    visited = []
+    # initialize dict for storing popped (visited) nodes
+    visited = {}
+    # initialize dict for parent nodes
+    parent = {}
+    # initialize list var for storing solution path
+    spath = []
+    # initialize Queue for storing tuplets containing [name, direction, cost]
     queue = util.Queue()
-
+    # append the starting node/state to visited list
     visited.append(problem.getStartState())
-    queue.push(problem.getStartState())
-
-    # create loop to continue until queue reaches end
-    while not queue.isEmpty():
+    # append starting node/state to Queue
+    queue.push((problem.getStartState(), 'null', 0))
+    if problem.isGoalState():
+        return spath
+    # create loop to continue until queue reaches end // add a conditional to cover case of goal being reached
+    isGoal = False
+    while (queue.isEmpty() is False and isGoal is False):
         # assign what's being popped off of queue to m
         m = queue.pop()
-        # check to make sure m is not the goal state
-        if problem.isGoalState(m):
-            return m[1]
+        # print stmnts to keep track of successors
         print("Start's successors:", problem.getSuccessors(m))
         print(m, end = " ")
-        sucs = problem.getSuccessors(m)
-        print(m)
-        # loop through successors of current state to check for existence in visited
-        # if state not found in visited, append to visited. Also push to queue with modified direction
-        # direction should be modified each time a successor is found (for the first time).
-        # new node would be [name, [dir1 + dir2 + dir 3...], cost]
-        for successor, tuple in enumerate(sucs):
-            if tuple not in visited:
-                visited.append(tuple)
-                t1 = tuple[1]
-                tuple[1] = m[0][1] + tuple[1]
-                queue.push(tuple)
-        print(problem)
+        # store direction/node
+        visited[m[0]] = m[1]
+        # check if goal is reached
+        if problem.isGoalState(m[0]):
+            snode = m[0]
+            isGoal = True
+            break
+
+        # assign successors of node to var
+        sucs = problem.getSuccessors(m[0])
     #print("Start:", problem.getStartState())
     #print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    
     #util.raiseNotDefined()
-    return m[1]
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
