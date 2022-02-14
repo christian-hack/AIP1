@@ -102,11 +102,14 @@ def breadthFirstSearch(problem):
     spath = []
     # initialize Queue for storing tuplets containing [name, direction, cost]
     queue = util.Queue()
-    # append the starting node/state to visited list
-    visited.append(problem.getStartState())
+    # store start state to var // oof
+    start = problem.getStartState()
     # append starting node/state to Queue
-    queue.push((problem.getStartState(), 'null', 0))
-    if problem.isGoalState():
+    queue.push((start, 'null', 0))
+    # set starting node/state direction to null
+    visited[start] = 'null'
+    # ensure start state is not goal state
+    if problem.isGoalState(start):
         return spath
     # create loop to continue until queue reaches end // add a conditional to cover case of goal being reached
     isGoal = False
@@ -114,8 +117,9 @@ def breadthFirstSearch(problem):
         # assign what's being popped off of queue to m
         m = queue.pop()
         # print stmnts to keep track of successors
-        print("Start's successors:", problem.getSuccessors(m))
-        print(m, end = " ")
+        # print("Start's successors:", problem.getSuccessors(m))
+        # print(m, end = " ")
+
         # store direction/node
         visited[m[0]] = m[1]
         # check if goal is reached
@@ -126,6 +130,21 @@ def breadthFirstSearch(problem):
 
         # assign successors of node to var
         sucs = problem.getSuccessors(m[0])
+         # loop through successors of current state to check for existence in visited
+        # if state not found in visited, store parent and successor nodes
+        for successor in sucs:
+            if successor[0] not in parent.keys() and successor[0] not in visited.keys():
+                parent[successor[0]] = m[0]
+                queue.push(successor)
+
+    # find/store solution
+    # obtain parent node
+    # prepend to spath
+    while (snode in parent.keys()):
+        oldS = parent[snode]
+        spath.insert(0, visited[snode])
+        snode = oldS
+    return spath
     #print("Start:", problem.getStartState())
     #print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     #util.raiseNotDefined()
