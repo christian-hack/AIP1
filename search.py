@@ -94,17 +94,17 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    # initialize list var for storing solution path
+    spath = []
     # initialize dict for storing popped (visited) nodes
     visited = {}
     # initialize dict for parent nodes
     parent = {}
-    # initialize list var for storing solution path
-    spath = []
     # initialize Queue for storing tuplets containing [name, direction, cost]
     queue = util.Queue()
     # store start state to var // oof
     start = problem.getStartState()
-    # append starting node/state to Queue
+    # push starting node/state to Queue
     queue.push((start, 'null', 0))
     # set starting node/state direction to null
     visited[start] = 'null'
@@ -130,7 +130,7 @@ def breadthFirstSearch(problem):
 
         # assign successors of node to var
         sucs = problem.getSuccessors(m[0])
-         # loop through successors of current state to check for existence in visited
+        # loop through successors of current state to check for existence in visited
         # if state not found in visited, store parent and successor nodes
         for successor in sucs:
             if successor[0] not in parent.keys() and successor[0] not in visited.keys():
@@ -164,7 +164,70 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    # initializations
+
+       # initialize dict for storing popped (visited) nodes
+    visited = {}
+    # initialize var to store solution path
+    spath = []
+    # initialize Priority Queue for storing tuplets containing [name, direction, cost]
+    queue = util.PriorityQueue()
+    # initialize dict for parent nodes
+    parent = {}
+    # initialize dict to store cost values
+    cost = {}
+    # store start state to var
+    start = problem.getStartState()
+    # push starting node/state to Priority Queue
+    queue.push((start, 'null', 0), 0)
+    # set starting node/state direction to null
+    visited[start] = 'null'
+    # set starting state cost to 0
+    cost[start] = 0
+    # conditional to cover case of start state being goal
+    if problem.isGoalState(start):
+        return spath
+    # create loop to continue until queue reaches end // add a conditional to cover case of goal being reached
+    isGoal = False
+    snode = None
+    while (queue.isEmpty() is False and isGoal is False):
+        # pop from top of queue
+        m = queue.pop()
+        # store element and its direction
+        visited[m[0]] = m[1]
+        # check if element is goal
+        if problem.isGoalState(m[0]):
+            snode = m[0]
+            isGoal = True
+            break
+        # assign successors of node to var
+        sucs = problem.getSuccessors(m[0])
+        # loop through successors of current state to check for existence in visited
+        # determine cost in the case that the successor is not already visited
+        # if determined cost is greater than old cost or if cost is predetermined from expanding elsewhere, continue
+        for successor in sucs:
+            if successor[0] not in visited.keys():
+                priority = m[2] + successor[2] + heuristic(successor[0], problem)
+                if successor[0] in cost.keys():
+                    if cost[successor[0]] <= priority:
+                        continue
+                # if determined cost is best, push to Priority Queue and update parent/cost
+                queue.push((successor[0], successor[1], m[2] + successor[2]), priority)
+                cost[successor[0]] = priority
+                parent[successor[0]] = m[0]
+
+    # find/store solution
+    # obtain parent node
+    # prepend to spath
+    while(snode in parent.keys()):
+        oldS = parent[snode]
+        spath.insert(0, visited[snode])
+        snode = oldS
+
+    return spath
+
+    #util.raiseNotDefined()
 
 
 # Abbreviations
