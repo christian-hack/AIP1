@@ -345,7 +345,7 @@ class CornersProblem(search.SearchProblem):
                     if position == (sucx, sucy):
                         continue
                     nv.append(position)
-                # add the new coordinates and the nonvisited list to successors
+                # add nv and position to successors
                 successors.append((((sucx, sucy), tuple(nv)), action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
@@ -384,45 +384,47 @@ def cornersHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
     if len(state[1]) == 0:
         return 0
-    # "nonvisited" contains the coordinates of food locations which have not yet been visited
-    nonvisited = state[1]
-    # "currentpos" contains Pacman's current position
-    currentpos = state[0]
-    # "distances" is for storing the Manhattan distance between current position and each food location
-    distances = []
+    # assign undiscovered coordinates of food locations to var
+    nv = state[1]
+    # assign Pacman's current position to var
+    currPos = state[0]
+    # assign manhattan distances from Pacman to food locations
+    manDist = []
+    # set heuristic to 0
     heuristic = 0
-    # if there is no food left, the function returns 0
-    if len(nonvisited) == 0:
+    # check if any food exists
+    if len(nv) == 0:
         return heuristic
-    # loop to calculate Manhattan distance between current position and each food location
-    for elem in nonvisited:
-        dist = abs(elem[0] - currentpos[0]) + abs(elem[1] - currentpos[1])
-        distances.append((dist,elem))
-    # distances are sorted in ascending order
-    distances = sorted(distances)
-    # the Manhattan distance between the current position and closest food location is added to the heuristic
-    heuristic = heuristic + distances[0][0]
+    # create loop to calculate MAnhattan distance to food locations
+    for i in nv:
+        dist = abs(i[0] - currPos[0]) + abs(i[1] - currPos[1])
+        manDist.append((dist, i))
+    # keep distances in ascending order
+    manDist = sorted(manDist)
+    # add manhattan distance to heuristic
+    heuristic = heuristic + manDist[0][0]
     # current position is changed to the position of closest food
-    closest_food = distances[0][1]
-    # remove closest food from nonvisited list
-    nonvisited = list(nonvisited)
-    for elem in nonvisited:
-        if elem == closest_food:
-            nonvisited.pop(nonvisited.index(elem))
-    nonvisited = tuple(nonvisited)
-    # if no more food is remaining, return heuristic
-    if len(nonvisited) == 0:
+    nxtFood = manDist[0][1]
+    # once the closest food location is determined, remove from nv
+    nv = list(nv)
+    for j in nv:
+        if j == nxtFood:
+            nv.pop(nv.index(j))
+    nv = tuple(nv)
+    # check for remaining food
+    # if not, return heuristic
+    if len(nv) == 0:
         return heuristic
-    # loop to calculate Manhattan distance between closest food and each remaining food location
-    distances = []
-    for elem in nonvisited:
-        dist = abs(elem[0] - closest_food[0]) + abs(elem[1] - closest_food[1])
-        distances.append((dist,elem))
+    # create loop to calculate MAnhattan distance to remaining food locations
+    manDist = []
+    for k in nv:
+        dist = abs(k[0] - nxtFood[0]) + abs(k[1] - nxtFood[1])
+        manDist.append((dist, k))
     # distances are sorted in descending order
-    distances = sorted(distances, reverse=True)
+    manDist = sorted(manDist, reverse=True)
 
     # the Manhattan distance between the closest food and the food farthest to it is added to the heuristic
-    heuristic = heuristic + distances[0][0]
+    heuristic = heuristic + manDist[0][0]
 
     return heuristic
 
