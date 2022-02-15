@@ -96,9 +96,9 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     # initialize list var for storing solution path
     spath = []
-    # initialize dict for storing popped (visited) nodes
+    # initialize (key, value) for storing popped (visited) nodes
     visited = {}
-    # initialize dict for parent nodes
+    # initialize (key, value) for parent nodes
     parent = {}
     # initialize Queue for storing tuplets containing [name, direction, cost]
     queue = util.Queue()
@@ -167,15 +167,15 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
     # initializations
 
-       # initialize dict for storing popped (visited) nodes
+    # initialize (key, value) for storing popped (visited) nodes
     visited = {}
     # initialize var to store solution path
     spath = []
     # initialize Priority Queue for storing tuplets containing [name, direction, cost]
     queue = util.PriorityQueue()
-    # initialize dict for parent nodes
+    # initialize (key, value) for parent nodes
     parent = {}
-    # initialize dict to store cost values
+    # initialize (key, value) to store cost values
     cost = {}
     # store start state to var
     start = problem.getStartState()
